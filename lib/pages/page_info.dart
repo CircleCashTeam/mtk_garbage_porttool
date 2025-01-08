@@ -1,9 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mtk_garbage_porttool/pages/info_card.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class PageInfo extends StatelessWidget {
-  Future<Map<String,String>> getPackageInfos() async {
+  Future<Map<String, String>> getPackageInfos() async {
     var pinfo = await PackageInfo.fromPlatform();
 
     return {
@@ -37,7 +38,20 @@ class PageInfo extends StatelessWidget {
                   style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                 ),
                 const Spacer(),
-                HyperlinkButton(child: const Text("Visit us on Github"), onPressed: () {},)
+                HyperlinkButton(
+                  child: const Row(
+                    children: [
+                      Icon(FluentIcons.git_graph),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Text("Visit us on Github"),
+                    ],
+                  ),
+                  onPressed: () {
+                    launchUrlString("https://github.com/CircleCashTeam");
+                  },
+                )
               ],
             ),
           ),
@@ -54,19 +68,24 @@ class PageInfo extends StatelessWidget {
                   title: Text("程序逻辑"),
                   trailing: Text("可乐 Kocleo"),
                 ),
-                FutureBuilder(future: getPackageInfos(), builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const ProgressRing();
-                  } else {
-                    return Column(
-                      children: List.generate(snapshot.data!.keys.length, (index) {
-                        return ListTile(title: Text(snapshot.data!.keys.elementAt(index)),
-                        trailing: Text(snapshot.data!.values.elementAt(index)),
+                FutureBuilder(
+                    future: getPackageInfos(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const ProgressRing();
+                      } else {
+                        return Column(
+                          children: List.generate(snapshot.data!.keys.length,
+                              (index) {
+                            return ListTile(
+                              title: Text(snapshot.data!.keys.elementAt(index)),
+                              trailing:
+                                  Text(snapshot.data!.values.elementAt(index)),
+                            );
+                          }),
                         );
-                      }),
-                    );
-                  }
-                })
+                      }
+                    })
               ],
             ),
           )
