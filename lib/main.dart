@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:get/get.dart';
 import 'package:window_manager/window_manager.dart';
 
 const double _kDefaultTitleBarHeight = 36;
@@ -21,10 +20,12 @@ Future<void> main() async {
     await windowManager.focus();
   });
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return FluentApp(
-      home: MyNav(),
+      home: const MyNav(),
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData.light(),
       darkTheme: FluentThemeData.dark(),
@@ -43,14 +44,18 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void toggleTheme() {
+  void toggleTheme(BuildContext context) {
     setState(() {
-      themeMode = Get.isDarkMode ? ThemeMode.light : ThemeMode.dark;
+      themeMode = FluentTheme.of(context).brightness == Brightness.dark
+          ? ThemeMode.light
+          : ThemeMode.dark;
     });
   }
 }
 
 class MyNav extends StatefulWidget {
+  const MyNav({super.key});
+
   @override
   State<MyNav> createState() => _MyNavState();
 }
@@ -66,6 +71,19 @@ class _MyNavState extends State<MyNav> {
           actions: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Tooltip(
+                message: "切换亮暗主题",
+                child: IconButton(
+                    icon: Icon(
+                        FluentTheme.of(context).brightness == Brightness.dark
+                            ? FluentIcons.lower_brightness
+                            : FluentIcons.brightness),
+                    onPressed: () {
+                      context
+                          .findAncestorStateOfType<_MyAppState>()
+                          ?.toggleTheme(context);
+                    }),
+              ),
               WindowCaptionButton.minimize(
                 brightness: FluentTheme.of(context).brightness,
                 onPressed: () => windowManager.minimize(),
@@ -79,7 +97,8 @@ class _MyNavState extends State<MyNav> {
           title: SizedBox.expand(
               child: DragToMoveArea(
             child: Container(
-                alignment: Alignment.centerLeft, child: const Text("联发科垃圾移植工具")),
+                alignment: Alignment.centerLeft,
+                child: const Text("联发科垃圾移植工具")),
           ))),
       pane: NavigationPane(
           size: const NavigationPaneSize(openMaxWidth: 120),
