@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:mtk_garbage_porttool/pages/page_info.dart';
 import 'package:window_manager/window_manager.dart';
 
 const double _kDefaultTitleBarHeight = 36;
@@ -8,6 +9,7 @@ Future<void> main() async {
   windowManager.ensureInitialized();
 
   WindowOptions windowOptions = const WindowOptions(
+    minimumSize: Size(800, 600),
     size: Size(800, 600),
     center: true,
     backgroundColor: Colors.transparent,
@@ -67,6 +69,8 @@ class _MyNavState extends State<MyNav> {
   Widget build(BuildContext context) {
     return NavigationView(
       appBar: NavigationAppBar(
+        leading: Image.asset("assets/CircleCashTeamLogo.png", width: 24,height: 24,),
+          automaticallyImplyLeading: false,
           height: _kDefaultTitleBarHeight,
           actions: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -114,14 +118,14 @@ class _MyNavState extends State<MyNav> {
                 title: const Text("主页"),
                 body: const Center(child: Text("Hello"))),
             PaneItem(
-                icon: const Icon(FluentIcons.home),
-                title: const Text("主页2"),
+                icon: const Icon(FluentIcons.app_icon_default),
+                title: const Text("移植"),
                 body: const Center(child: Text("Hello2")))
           ],
           footerItems: [
             PaneItem(
                 icon: const Icon(FluentIcons.info),
-                body: const Center(child: Text("About")),
+                body: PageInfo(),
                 title: const Text("关于")),
             PaneItem(
                 icon: const Icon(FluentIcons.settings),
