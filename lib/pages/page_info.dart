@@ -11,7 +11,7 @@ class PageInfo extends StatelessWidget {
       "应用名称": pinfo.appName,
       "版本": pinfo.version,
       "BuildNumber": pinfo.buildNumber,
-      "Signature": pinfo.buildSignature,
+      //"Signature": pinfo.buildSignature,
     };
   }
 
