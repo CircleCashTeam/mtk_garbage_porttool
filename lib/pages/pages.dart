@@ -1,1 +1,1 @@
-export './page_info.dart';
+export 'package:mtk_garbage_porttool/pages/page_home.dart';

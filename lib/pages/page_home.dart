@@ -1,9 +1,8 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:get/get.dart';
 import 'package:mtk_garbage_porttool/common.dart';
-import './info_card.dart';
+import 'package:mtk_garbage_porttool/pages/info_card.dart';
 
 const message = """\
 这个工具是完全免费的
@@ -12,7 +11,7 @@ const message = """\
 """;
 
 class PageHome extends StatelessWidget {
-  PageHome() {
+  PageHome({super.key}) {
     systemController.text = pathController.getSystemImagePath();
     bootController.text = pathController.getBootImagePath();
   }
