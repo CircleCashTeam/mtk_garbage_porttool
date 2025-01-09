@@ -1,5 +1,8 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
+import 'package:mtk_garbage_porttool/common.dart';
 import './info_card.dart';
 
 const message = """\
@@ -9,6 +12,16 @@ const message = """\
 """;
 
 class PageHome extends StatelessWidget {
+  PageHome() {
+    systemController.text = pathController.getSystemImagePath();
+    bootController.text = pathController.getBootImagePath();
+  }
+
+  final pathController = Get.put(BaseItemController());
+
+  final systemController = TextEditingController();
+  final bootController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -20,11 +33,16 @@ class PageHome extends StatelessWidget {
             subTitle: "仔细看",
             child: Container(
               padding: const EdgeInsets.all(40),
-              child: const Text(message,
-                style: TextStyle(
-                    color: Colors.warningPrimaryColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20),
+              child: const Center(
+                child: Text(
+                  message,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      color: Colors.warningPrimaryColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                      ),
+                ),
               ),
             ),
           ),
@@ -36,17 +54,54 @@ class PageHome extends StatelessWidget {
             child: Column(
               children: [
                 ListTile(
-                  title: const TextBox(),
+                  title: TextBox(
+                    controller: systemController,
+                    readOnly: true,
+                  ),
                   trailing: Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: SizedBox(width: 160 ,child: Button(child: const Text("选择System镜像"), onPressed: () {})),
+                    child: SizedBox(
+                        width: 160,
+                        child: Button(
+                            child: const Text("选择System镜像"),
+                            onPressed: () async {
+                              final result =
+                                  await FilePicker.platform.pickFiles(
+                                dialogTitle: "选择system镜像",
+                                allowMultiple: false,
+                              );
+                              if (result != null) {
+                                systemController.text =
+                                    result.files.first.path!;
+                                pathController.setSystemImagePath(
+                                    result.files.first.path!);
+                              }
+                            })),
                   ),
                 ),
                 ListTile(
-                  title: const TextBox(),
+                  title: TextBox(
+                    controller: bootController,
+                    readOnly: true,
+                  ),
                   trailing: Padding(
                     padding: const EdgeInsets.only(left: 10),
-                    child: SizedBox(width: 160 ,child: Button(child: const Text("选择Boot镜像"), onPressed: () {})),
+                    child: SizedBox(
+                        width: 160,
+                        child: Button(
+                            child: const Text("选择Boot镜像"),
+                            onPressed: () async {
+                              final result =
+                                  await FilePicker.platform.pickFiles(
+                                dialogTitle: "选择boot镜像",
+                                allowMultiple: false,
+                              );
+                              if (result != null) {
+                                bootController.text = result.files.first.path!;
+                                pathController
+                                    .setBootImagePath(result.files.first.path!);
+                              }
+                            })),
                   ),
                 ),
               ],
