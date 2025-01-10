@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:mtk_garbage_porttool/pages/page_home.dart';
-import 'package:mtk_garbage_porttool/pages/page_info.dart';
 import 'package:window_manager/window_manager.dart';
+
+import 'package:mtk_garbage_porttool/pages/pages.dart';
 
 const double _kDefaultTitleBarHeight = 36;
 
@@ -121,7 +121,7 @@ class _MyNavState extends State<MyNav> {
             PaneItem(
                 icon: const Icon(FluentIcons.app_icon_default),
                 title: const Text("移植"),
-                body: const Center(child: Text("Hello2")))
+                body: PagePort(),),
           ],
           footerItems: [
             PaneItem(
