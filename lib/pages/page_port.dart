@@ -1,6 +1,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:get/get.dart';
 
-enum PortMethods { mt6572Common, mt6735Common, mtkCommon }
+const portMethods = [
+                  'MTK Common Kernel and Options',
+                  'MT6735/37(m) Kernel 3.18.19',
+                  'MT6572/82/92 Kernel 3.4.67',
+                ];
+
+class PortMethodController extends GetxController {
+  var portMethod = portMethods[0].obs;
+  var outputImg = false.obs;
+}
 
 class PagePort extends StatelessWidget {
   @override
@@ -12,7 +22,7 @@ class PagePort extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             PagePortLeft(),
-            SizedBox(width: 10,),
+            const SizedBox(width: 10,),
             PagePortRight(),
           ],
         ));
@@ -21,6 +31,8 @@ class PagePort extends StatelessWidget {
 
 class PagePortLeft extends StatelessWidget {
 
+  final portMethodController = Get.put(PortMethodController());
+
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -28,29 +40,29 @@ class PagePortLeft extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text("移植方案"),
-              SizedBox(width: 10,),
-              ComboBox(
-                  onChanged: (value) {
-                      
-                  },
-                    items: [
-                  'MT6735/37(m) Kernel 3.18.19',
-                  'MT6572/82/92 Kernel 3.4.67',
-                  'MTK Common Kernel and Options'
-                ].map((e) {
-                  return ComboBoxItem(value: e, child: Text(e));
-                }).toList()),
-            ],
-          ),
+          Expanded(flex: 0,child: ListTile(
+            title: const Text("选择一个移植方案"),
+            subtitle: Obx(() => Text(portMethodController.portMethod.value)),
+            leading: const Icon(FluentIcons.cake),
+            trailing: DropDownButton(
+              title: const Text("选择方案"),
+              items: portMethods.map(
+              (value) {
+                return MenuFlyoutItem(text: Text(value), onPressed: () {
+                  portMethodController.portMethod.value = value;
+                });
+              }
+            ).toList()
+              ),
+          ),),
           Expanded(child: 
           Padding(
             padding: const EdgeInsets.only(top: 10, bottom: 10),
             child: Card(
-              child: TreeView(items: 
+              child: TreeView(
+                selectionMode: TreeViewSelectionMode.multiple,
+                shrinkWrap: true,
+                items: 
               List.generate(200, (value) {
                 return TreeViewItem(content: Text("item $value"), value: value);
               })
@@ -62,11 +74,22 @@ class PagePortLeft extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(child: Button(child: Text("dummy"), onPressed: () {})),
-              SizedBox(width: 10,),
-              Expanded(child: Button(child: Text("dymmy"), onPressed: () {})),
+              Expanded(child: Button(child: const Text("dummy"), onPressed: () {})),
+              const SizedBox(width: 10,),
+              Expanded(child: Button(child: const Text("dymmy"), onPressed: () {})),
             ],
-          )
+          ),
+
+          Expanded(flex: 0,child: ListTile(
+            leading: const Icon(FluentIcons.configuration_solid),
+            title: const Text("输出为IMG"),
+            subtitle: const Text("输出img镜像文件"),
+            trailing: Obx(
+              () => Checkbox(checked: portMethodController.outputImg.value, onChanged: (value) {
+                portMethodController.outputImg.value = value ?? false;
+              }),
+            ),
+          ),)
 
         ],
       ),
