@@ -74,9 +74,9 @@ class PagePortLeft extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Expanded(child: Button(child: const Text("dummy"), onPressed: () {})),
+              Expanded(child: Button(child: const Text("选择ROM"), onPressed: () {})),
               const SizedBox(width: 10,),
-              Expanded(child: Button(child: const Text("dymmy"), onPressed: () {})),
+              Expanded(child: FilledButton(child: const Text("开始移植"), onPressed: () {})),
             ],
           ),
 
