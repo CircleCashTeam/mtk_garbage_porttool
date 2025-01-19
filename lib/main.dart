@@ -22,25 +22,18 @@ Future<void> main() async {
     minimumSize: Size(800, 600),
     size: Size(800, 600),
     center: true,
-    backgroundColor: Colors.transparent,
+    //backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
     windowButtonVisibility: false,
   );
   await windowManager.waitUntilReadyToShow(windowOptions, () async {
-    await Window.setEffect(
-      effect: await getCorrectWindowEffect(),
-      color: Platform.isWindows ? const Color(0xCC222222) : Colors.transparent,
-      dark: true,
-    );
     await windowManager.show();
     await windowManager.focus();
   });
 
-
   runApp(const MyApp());
 }
-
 
 Future<int> getWindowsBuildNumber() async {
   DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -53,21 +46,23 @@ Future<int> getWindowsBuildNumber() async {
 }
 
 Future<WindowEffect> getCorrectWindowEffect() async {
+  var effect = WindowEffect.solid;
   if (Platform.isWindows) {
     final buildNumber = await getWindowsBuildNumber();
-    if (buildNumber >= 22523) {
-      return WindowEffect.tabbed;
-    } else if (buildNumber >= 22000) {
-      return WindowEffect.mica;
-    } else
-      if (buildNumber >= 10240) {
-        return WindowEffect.acrylic;
-    } else {
-      return WindowEffect.solid;
+    log("Get build Number: $buildNumber");
+    if (buildNumber > 22523) {
+      effect = WindowEffect.tabbed;
+    } else if (buildNumber > 22000) {
+      effect = WindowEffect.mica;
+    } else if (buildNumber > 10240) {
+      effect = WindowEffect.acrylic;
     }
-  } else {
-    return WindowEffect.solid;
+    //if (buildNumber > 10240) {
+    //  effect = WindowEffect.acrylic;
+    //}
   }
+  log("Set window effect: ${effect.name}");
+  return effect;
 }
 
 class MyApp extends StatefulWidget {
@@ -78,7 +73,24 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  var themeMode = ThemeMode.system;
+  //var themeMode = ThemeMode.system;
+  // Force dark theme
+  var themeMode = ThemeMode.dark;
+
+  void setWindowEffect() async {
+    Window.setEffect(
+      effect: await getCorrectWindowEffect(),
+      color: Colors.transparent,
+      //color: Platform.isWindows ? const Color(0xCC222222) : Colors.transparent,
+      dark: true,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    setWindowEffect();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -87,12 +99,12 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       theme: FluentThemeData.light().copyWith(
           scaffoldBackgroundColor: Colors.transparent,
-          navigationPaneTheme:
-              NavigationPaneThemeData(backgroundColor:Platform.isWindows ? Colors.transparent : null)),
+          navigationPaneTheme: NavigationPaneThemeData(
+              backgroundColor: Platform.isWindows ? Colors.transparent : null)),
       darkTheme: FluentThemeData.dark().copyWith(
           scaffoldBackgroundColor: Colors.transparent,
-          navigationPaneTheme:
-              NavigationPaneThemeData(backgroundColor:Platform.isWindows ? Colors.transparent : null)),
+          navigationPaneTheme: NavigationPaneThemeData(
+              backgroundColor: Platform.isWindows ? Colors.transparent : null)),
       color: Colors.transparent,
       themeMode: themeMode,
     );
@@ -173,18 +185,24 @@ class _MyNavState extends State<MyNav> {
             PaneItem(
               icon: const Icon(FluentIcons.home),
               title: const Text("主页"),
-              body: PageHome(),
+              body: Container(
+                color: FluentTheme.of(context).cardColor,
+                child: PageHome()),
             ),
             PaneItem(
               icon: const Icon(FluentIcons.app_icon_default),
               title: const Text("移植"),
-              body: PagePort(),
+              body: Container(
+                color: FluentTheme.of(context).cardColor,
+                child: PagePort()),
             ),
           ],
           footerItems: [
             PaneItem(
                 icon: const Icon(FluentIcons.info),
-                body: PageInfo(),
+                body: Container(
+                  color: FluentTheme.of(context).cardColor,
+                  child: PageInfo()),
                 title: const Text("关于")),
             //PaneItem(
             //    icon: const Icon(FluentIcons.settings),
