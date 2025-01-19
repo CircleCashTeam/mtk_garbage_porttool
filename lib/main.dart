@@ -2,6 +2,8 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:get/get.dart';
+import 'package:mtk_garbage_porttool/common.dart';
 import 'package:window_manager/window_manager.dart';
 import 'package:flutter_acrylic/flutter_acrylic.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -51,7 +53,7 @@ Future<WindowEffect> getCorrectWindowEffect() async {
     final buildNumber = await getWindowsBuildNumber();
     log("Get build Number: $buildNumber");
     if (buildNumber > 22523) {
-      effect = WindowEffect.tabbed;
+      effect = WindowEffect.menu;
     } else if (buildNumber > 22000) {
       effect = WindowEffect.mica;
     } else if (buildNumber > 10240) {
@@ -90,6 +92,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     setWindowEffect();
+    windowManager.setBrightness(Brightness.dark);
   }
 
   @override
@@ -128,6 +131,8 @@ class MyNav extends StatefulWidget {
 
 class _MyNavState extends State<MyNav> {
   var pageIndex = 0;
+
+  final logController = Get.put(LogController());
 
   @override
   Widget build(BuildContext context) {
